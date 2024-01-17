@@ -2,7 +2,7 @@
 npm init -y
 
 # Express
-npm init -y
+npm i express
 
 # TypeScript
 npm i -D typescript
