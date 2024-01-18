@@ -54,7 +54,7 @@ npx tsc --init
 
 # Crear migraciones en TypeORM manualmente
 npx typeorm migration:create ./src/database/migrations/CreateRoles
-npx typeorm migration:create ./src/database/migrations/CreateUser
+npx typeorm migration:create ./src/database/migrations/CreateUsers
 npx typeorm migration:create ./src/database/migrations/CreateClientes
 npx typeorm migration:create ./src/database/migrations/CreateArtists
 npx typeorm migration:create ./src/database/migrations/CreateAppointments
