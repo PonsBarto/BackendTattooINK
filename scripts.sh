@@ -63,7 +63,7 @@ npx typeorm migration:create ./src/database/migrations/CreateDesigns
 
 
 # Ejecutar migraciones en TypeORM 
-npx typeorm-ts-node-commonjs migration:run -d ./src/data-source.ts 
+npx typeorm-ts-node-commonjs migration:run -d ./src/database/data-source.ts 
 
 # Revierte la última migración en TypeORM. Para revertir las demás, repetir el comando en orden inverso.
 npx typeorm-ts-node-commonjs migration:revert -d ./src/data-source.ts
@@ -71,3 +71,8 @@ npx typeorm-ts-node-commonjs migration:revert -d ./src/data-source.ts
 
 # Crear modelos
 npx typeorm entity:create ./src/models/User
+npx typeorm entity:create ./src/models/Role
+npx typeorm entity:create ./src/models/Design
+npx typeorm entity:create ./src/models/Client
+npx typeorm entity:create ./src/models/Artist
+npx typeorm entity:create ./src/models/Appointment
