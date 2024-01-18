@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 
-///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 export const AppDataSource = new DataSource({
 type: "mysql",
@@ -11,7 +11,7 @@ username: "root",
 password:"root",
 database:"backendtattooink",
 entities: [],
-migrations: [],
+migrations: [`${__dirname}/migrations/**/*{.js,.ts}`],
 synchronize: false,
 logging: false,
 });

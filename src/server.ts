@@ -1,6 +1,6 @@
 import app from "./app";
 import { Request, Response } from "express";
-import { AppDataSource } from "./data-source";
+import { AppDataSource } from "./database/data-source";
 
 ////////////////////////////////////////////////////////////////////
 
