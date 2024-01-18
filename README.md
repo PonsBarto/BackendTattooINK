@@ -33,13 +33,13 @@ Tecnologías utilizadas:
     <img src= "https://img.shields.io/badge/mysql-%234479A1"/>
 </a>
 <a href="https://www.expressjs.com/">
-    <img src= "https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB"/>
+    <img src= "https://img.shields.io/badge/Express.Js-%23000000"/>
 </a>
 <a href="https://nodejs.org/es/">
-    <img src= "https://img.shields.io/badge/node.js-026E00?style=for-the-badge&logo=node.js&logoColor=white"/>
+    <img src= "https://img.shields.io/badge/Node.js-%23%23339933"/>
 </a>
 <a href="https://developer.mozilla.org/es/docs/Web/JavaScript">
-    <img src= "https://img.shields.io/badge/javascipt-EFD81D?style=for-the-badge&logo=javascript&logoColor=black"/>
+    <img src= "https://img.shields.io/badge/JavaScript%23F7DF1E"/>
 </a>
  </div>
 
