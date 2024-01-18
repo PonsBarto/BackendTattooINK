@@ -39,7 +39,7 @@ Tecnologías utilizadas:
     <img src= "https://img.shields.io/badge/Node.js-%23%23339933"/>
 </a>
 <a href="https://developer.mozilla.org/es/docs/Web/JavaScript">
-    <img src= "https://img.shields.io/badge/JavaScript%23F7DF1E"/>
+    <img src= "https://img.shields.io/badge/JavaScript-%23F7DF1E"/>
 </a>
  </div>
 
