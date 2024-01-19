@@ -16,7 +16,7 @@ export class Client extends BaseEntity{
     @Column()
     last_name!: string
 
-    @Column()
+    @Column({unique: true})
     phone_number!: string
 
     @OneToOne(() => User, (user) => user.client)
