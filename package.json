@@ -6,7 +6,8 @@
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/server.js",
-    "dev": "nodemon --files src/server.ts"
+    "dev": "nodemon --files src/server.ts",
+    "seeder": "npx ts-node src/database/seeders/DatabaseSeeder.ts"
   },
   "keywords": [],
   "author": "BartoPons",
