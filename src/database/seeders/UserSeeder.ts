@@ -9,7 +9,7 @@ export const userSeeder = async ()=> {
  try {
        await AppDataSource.initialize();
    
-       const count = 10;
+       const count = 100;
        
 
        await seedUsersWithRoles({
