@@ -7,7 +7,8 @@
     "build": "npx tsc",
     "start": "node dist/server.js",
     "dev": "nodemon --files src/server.ts",
-    "seeder": "npx ts-node src/database/seeders/DatabaseSeeder.ts"
+    "seeder": "npx ts-node src/database/seeders/DatabaseSeeder.ts",
+    "migra": "npx typeorm-ts-node-commonjs migration:run -d ./src/database/data-source.ts"
   },
   "keywords": [],
   "author": "BartoPons",
