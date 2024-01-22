@@ -2,7 +2,6 @@ import app from "./app";
 import { Request, Response } from "express";
 import { AppDataSource } from "./database/data-source";
 
-////////////////////////////////////////////////////////////////////
 
 const port:number = 3000;
 
