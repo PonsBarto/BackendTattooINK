@@ -83,18 +83,22 @@ Tecnologías utilizadas:
                 "password": "princes"
             }
         ```
-- RUTINAS
-    - RECUPERAR RUTINAS  
+    - USUARIOS
+    - RECUPERAR TODOS USUARIOS 
 
-            GET http://localhost:3000/api/rutina
+            GET http://localhost:3000/api/users 
+    
+    - RECUPERAR USUARIOS POR ID
+
+             GET http://localhost:3000/api/users/:id 
+
+    - ELIMINAR USUARIOS POR ID
+
+            DELETE http://localhost:3000/api/users/:id
 
     - ...
 </details>
 
-## Futuras funcionalidades
-[ ] Añadir create book  
-[ ] Añadir logs  con winston  
-[ ] Validaciones de la solicitud con express-validator
 
 ## Contribuciones
 Las sugerencias y aportaciones son siempre bienvenidas.  
@@ -118,20 +122,21 @@ Puedes hacerlo de dos maneras:
     - Abre una solicitud de Pull Request
 
 ## Licencia
-Este proyecto se encuentra bajo licencia de "Mi Nombre"
+Este proyecto se encuentra bajo licencia de "BartoPons"
 
 ## Webgrafia:
 Para conseguir mi objetivo he recopilado información de:
-- link a repositorios 
-- link a documentacion de librerias externas
-- ...
+- Documentacion TypeOrm
+- Paquetes de npmjs.com
+- Documentacion Bootcamp GeeksHubs y repositorio de Fidel 
+
 
 ## Desarrollo:
 
 ``` js
  const developer = "BartoPons";
 
- console.log("Desarrollado por: " + datata);
+
 ```  
 
 
