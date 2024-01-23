@@ -14,7 +14,7 @@ export class Client extends BaseEntity{
     first_name!: string
 
     @Column()
-    last_name!: string
+    last_name?: string
 
     @Column({unique: true})
     phone_number!: string

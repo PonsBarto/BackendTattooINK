@@ -39,7 +39,7 @@ export class CreateArtists1705568260571 implements MigrationInterface {
                 {
                   name: "tattoo_style",
                   type: "enum",
-                  enum: ["traditional, tribal, realism, blackwork"],
+                  enum: ["Tribal","New School","Old School", "Blackwork", "realism",  "Irezumi", "Acuarel", "Blackwork" ],
                   isNullable: true,
                 },
               ],

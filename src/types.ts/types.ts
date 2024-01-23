@@ -1,8 +1,8 @@
 export interface CreateClientRequestBody {
-    username: string;
-    email: string;
-    password: string;
-    first_name: string;
+   username: string;
+   email: string;
+   password: string;
+   first_name: string;
    last_name: string;
    date_of_birth: string;
    address?: string;
@@ -12,12 +12,12 @@ export interface CreateClientRequestBody {
    
  };
 
- export interface LoginUserRequestBody {
-    email: string;
-    password: string;
- }
-
- export interface TokenData {
-    userId: string;
-    userRoles: string[];
- }
+export interface CreateArtistRequestBody {
+   username: string;
+   email: string;
+   password: string;
+   first_name: string;
+   phone_number: string;
+   tattoo_style: string;
+   user_id:number;
+ };

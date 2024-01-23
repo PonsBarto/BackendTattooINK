@@ -13,7 +13,7 @@ export const userSeeder = async ()=> {
        
 
        await seedUsersWithRoles({
-        roles: [UserRoles.ARTIST],
+        roles: [UserRoles.ADMIN],
         count: count,
      });
 
@@ -47,7 +47,7 @@ export const seedUsersWithRoles = async ({
   const users = userFactory.createMany(count);
 
   users.forEach((user) => {
-     user.role = rolesData[1];
+     user.role = rolesData[0];
   });
  
 
