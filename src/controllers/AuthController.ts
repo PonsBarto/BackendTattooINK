@@ -8,6 +8,9 @@ import { AppDataSource } from "../database/data-source";
 import { Role } from "../models/Role";
 import { Artist } from "../models/Artist";
 import { Client } from "../models/Client";
+import { StatusCodes } from "http-status-codes";
+
+
 
 export class AuthController {
   async registerClient(
@@ -148,4 +151,29 @@ export class AuthController {
 
     return res.status(200).json(updatedUser);
   }
+  async changePassword(req: Request, res: Response): Promise<Response> {
+    if (!req.user) {
+        return res.status(StatusCodes.UNAUTHORIZED).json({ message: "No autenticado" });
+    }
+
+    const userId = req.user.id;
+    const { currentPassword, newPassword } = req.body;
+
+    const userRepository = AppDataSource.getRepository(User);
+    const user = await userRepository.findOneBy({ id: userId });
+
+    if (!user) {
+        return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    const validPassword = bcrypt.compareSync(currentPassword, user.password_hash);
+    if (!validPassword) {
+        return res.status(401).json({ message: "Contraseña actual incorrecta" });
+    }
+
+    const hashedNewPassword = bcrypt.hashSync(newPassword, 10);
+    await userRepository.update(userId, { password_hash: hashedNewPassword });
+
+    return res.status(200).json({ message: "Contraseña actualizada con éxito" });
+}
 }

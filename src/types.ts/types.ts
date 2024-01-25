@@ -21,3 +21,8 @@ export interface CreateArtistRequestBody {
    tattoo_style: string;
    user_id:number;
  };
+
+ export interface TokenData {
+  userId: number;
+  userRoles: string[];
+};
