@@ -17,18 +17,28 @@ export class CreateDesigns1705568266706 implements MigrationInterface {
                 {
                   name: "artist_id",
                   type: "int",
-                  isUnique: true,
                 },
                 {
-                  name: "name",
-                  type: "varchar",
-                  length: "50",
+                  name: "style",
+                  type: "int",
+                  length: "20",
+                  isNullable: false,
                 },
                 {
                   name: "image",
                   type: "varchar",
-                  length: "50",
-                  isNullable: true,
+                  length: "255",
+                },
+                {
+                  name: "created_at",
+                  type: "timestamp",
+                  default: "CURRENT_TIMESTAMP",
+                },
+                {
+                  name: "updated_at",
+                  type: "timestamp",
+                  default: "CURRENT_TIMESTAMP",
+                  onUpdate: "CURRENT_TIMESTAMP",
                 },
               ],
               foreignKeys: [
@@ -42,7 +52,7 @@ export class CreateDesigns1705568266706 implements MigrationInterface {
             }),
             true
           );
-    }
+        }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.dropTable("designs");

@@ -20,6 +20,17 @@ export class CreateRoles1705565437308 implements MigrationInterface {
                      length: "50",
                      isUnique: true,
                   },
+                  {
+                    name: "created_at",
+                    type: "timestamp",
+                    default: "CURRENT_TIMESTAMP",
+                  },
+                  {
+                    name: "updated_at",
+                    type: "timestamp",
+                    default: "CURRENT_TIMESTAMP",
+                    onUpdate: "CURRENT_TIMESTAMP",
+                  },
                ],
             }),
             true
