@@ -1,35 +1,30 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, JoinColumn, PrimaryColumn } from "typeorm"
-import { User } from "./User"
-import { Appointment } from "./Appointment"
-import { Design } from "./Design"
+import { BaseEntity, Column, PrimaryGeneratedColumn, OneToMany, Entity, OneToOne, JoinColumn } from "typeorm"
+import { User } from "./User";
+import { Design } from "./Design";
+import { Appointment } from "./Appointment";
+
 
 @Entity("artists")
-export class Artist extends BaseEntity {
+export class Artist {
     @PrimaryGeneratedColumn()
     id!: number;
-  
+
     @Column()
-    first_name!: string;
-  
+    portfolio?: string;
+
     @Column()
-    last_name?: string;
-  
+    created_at!: Date;
+
     @Column()
-    phone_number!: string;
-  
-    @Column()
-    tattoo_style!: string;
- 
-    @OneToOne(() => User, (user) => user.artist)
-    @JoinColumn({ name: "user_id" })
-    user!: User;
-  
+    updated_at!: Date;
+
+    @OneToMany(() => Design, (design) => design)
+    design!: Design[];
 
     @OneToMany(() => Appointment, (appointment) => appointment.artist)
-    appointment!: Appointment;
-  
-   
-    @OneToMany(() => Design, (design) => design.artist)
-    design!: Design;
+    customerAppointments!: Appointment[];
 
+    @OneToOne(() => User, user => user.artist)
+    @JoinColumn({ name: "user_id" })
+    user!: User;
 }

@@ -1,20 +1,28 @@
-import { Entity, BaseEntity, Column, JoinColumn, PrimaryColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
-import { Artist } from "./Artist"
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm"
+import { Artist } from "./Artist";
+
 
 @Entity("designs")
 export class Design extends BaseEntity {
-
     @PrimaryGeneratedColumn()
-    id!: number
+    id!: number;
 
     @Column()
-    design_number!: string
+    artist_id!: number;
 
     @Column()
-    image!: string
+    style!: string;
 
-    @ManyToOne (()=> Artist, (artist)=> artist.design)
+    @Column()
+    image!: string;
+
+    @Column()
+    created_at!: Date;
+
+    @Column()
+    updated_at!: Date;
+
+    @ManyToOne(() => Artist, (artist) => artist.user)
     @JoinColumn ({name: "artist_id"})
     artist!: Artist;
-
 }
