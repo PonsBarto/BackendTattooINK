@@ -11,6 +11,14 @@ export interface CreateClientRequestBody {
    nationality?: string;
    
  };
+ 
+ export interface CreateUserRequestBody {
+  username: string;
+  name: string;
+  surname: string;
+  password_hash: string;
+  email: string;   
+}
 
 export interface CreateArtistRequestBody {
    username: string;
@@ -22,7 +30,20 @@ export interface CreateArtistRequestBody {
    user_id:number;
  };
 
- export interface TokenData {
-  userId: number;
+ export interface LoginUserRequestBody {
+  email: string;
+  password: string;
+}
+
+export interface TokenData {
+  userId: string;
   userRoles: string[];
-};
+}
+
+export interface CreateAppointmentsRequestBody {
+ user_id: number,
+ artist_id:number,
+ date: Date;
+ hour: string
+}
+
