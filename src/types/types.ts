@@ -1,49 +1,29 @@
-export interface CreateClientRequestBody {
-   username: string;
-   email: string;
-   password: string;
-   first_name: string;
-   last_name: string;
-   date_of_birth: string;
-   address?: string;
-   phone_number?: string;
-   gender?: string;
-   nationality?: string;
-   
- };
- 
- export interface CreateUserRequestBody {
-  username: string;
+export interface CreateAppointmentsRequestBody {
+  user_id: number;
+  // artist_id: number;
+  date: Date;
+  time: string;
+}
+export interface CreateUserRequestBody {
   name: string;
-  surname: string;
-  password_hash: string;
-  email: string;   
+  last_name: string;
+  address: string;
+  email: string;  
+  password_hash: string;   
+  phone_number: number;
 }
 
 export interface CreateArtistRequestBody {
-   username: string;
-   email: string;
-   password: string;
-   first_name: string;
-   phone_number: string;
-   tattoo_style: string;
-   user_id:number;
- };
+ user_id: string;
+ portfolio: string;
+}
 
- export interface LoginUserRequestBody {
+export interface LoginUserRequestBody {
   email: string;
-  password: string;
+  password_hash: string;
 }
 
 export interface TokenData {
   userId: string;
   userRoles: string[];
 }
-
-export interface CreateAppointmentsRequestBody {
- user_id: number,
- artist_id:number,
- date: Date;
- hour: string
-}
-
