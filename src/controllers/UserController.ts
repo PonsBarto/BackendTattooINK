@@ -27,7 +27,7 @@ export class UserController {
         email,
         phone_number,
         password_hash: bcrypt.hashSync(password_hash, 10),
-        // role: [UserRoles.CUSTOMER]
+        
       });
       await userRepository.save(newUser);
       res.status(StatusCodes.CREATED).json({
@@ -51,13 +51,11 @@ export class UserController {
     const userRepository = AppDataSource.getRepository(User);
 
     try {
-      // Validar existencia de email y contraseña
       if (!email || !password_hash) {
         return res.status(StatusCodes.BAD_REQUEST).json({
           message: "Email or password is required",
         });
       }
-      // Encontrar un usuario por email
       const user = await userRepository.findOne({
         where: {
           email: email,
@@ -72,27 +70,25 @@ export class UserController {
         },
       });
 
-      // Verificar usuario inexistente
       if (!user) {
         return res.status(StatusCodes.BAD_REQUEST).json({
           message: "Bad email or password",
         });
       }
 
-      // Verificar contraseña si el usuario existe
+    
       const isPasswordValid = bcrypt.compareSync(
         password_hash,
         user.password_hash
       );
 
-      // Verificar contraseña valida
+    
       if (!isPasswordValid) {
         return res.status(StatusCodes.BAD_REQUEST).json({
           message: "Bad email or password",
         });
       }
 
-      // Generar token
 
       const tokenPayload: TokenData = {
         userId: user.id?.toString() as string,
@@ -162,7 +158,7 @@ export class UserController {
     const userRepository = AppDataSource.getRepository(User); 
     try { 
       console.log('Creando usuario') 
-      // Crear nuevo usuario 
+      
       const dataUser: User = { 
         name, 
         last_name, 
@@ -177,14 +173,12 @@ export class UserController {
       }; 
       console.log("1") 
       const newUser = await userRepository.save(dataUser); 
-      // Crear nuevo artista asociado al usuario 
         const artistRepository = AppDataSource.getRepository(Artist); 
         const newArtist = await artistRepository.save({ 
           user: newUser, 
-          portfolio: "https://",  // Utiliza el valor proporcionado o un valor predeterminado 
+          portfolio: "https://", 
         }); 
-        // Utilizar el método save para agregar un nuevo artista 
-        // await artistRepository.save(newArtist); 
+       
       console.log("2") 
       res.status(201).json(newArtist); 
     } catch (error: any) { 
@@ -213,7 +207,6 @@ export class UserController {
         take: itemsPerPage,
         select: {
           id: true,
-          // user_id: true,
         },
       });
       res.status(200).json({

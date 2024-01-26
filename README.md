@@ -56,47 +56,121 @@ Tecnologías utilizadas:
 6. ``` $ npm run dev ``` 
 
 ## Endpoints
+
 <details>
-<summary>Endpoints</summary>
+<summary>USERS ENDPOINTS</summary>
 
-- AUTH
-    - REGISTER
+- USERS
 
-            POST http://localhost:3000/api/register
-        body:
-        ``` js
-            {
-                "user": "David",
-                "email": "david@david.com",
-                "password": "princes"
-            }
-        ```
+  - REGISTER
 
-    - LOGIN
+          POST http://localhost:3000/api/register
 
-            POST http://localhost:3000/api/login  
-        body:
-        ``` js
-            {
-                "user": "David",
-                "email": "david@david.com",
-                "password": "princes"
-            }
-        ```
-    - USUARIOS
-    - RECUPERAR TODOS USUARIOS 
+    body:
 
-            GET http://localhost:3000/api/users 
-    
-    - RECUPERAR USUARIOS POR ID
+    ```js
+        {
+            "name":"Pepe",
+            "last_name":"Calavera",
+            "address":"Palma de Mallorca 125",
+            "email":"pepcala2@liamg.com",
+            "password_hash":"123456",
+            "phone_number":"123456789"
+        }
+    ```
 
-             GET http://localhost:3000/api/users/:id 
+  - LOGIN
 
-    - ELIMINAR USUARIOS POR ID
+          POST http://localhost:3000/api/login
 
-            DELETE http://localhost:3000/api/users/:id
+    body:
 
-    - ...
+    ```js
+        {
+            "email": "pepcala2@liamg.com",
+            "password": "123456"
+        }
+    ```
+
+  - PROFILE
+
+          GET http://localhost:3000/api/:id
+
+    - Insertar ID de user para  mostrar los datos
+
+  - UPDATE
+
+          PATCH http://localhost:3000/api/:id
+
+    body:
+
+    ```js
+        {
+            "name": "NewUser  ",
+            "password": "NewPrinces1234@",
+            "phone_number": "55555559"
+        }
+    ```
+
+  - GET ALL ARTISTS
+
+          GET http://localhost:3000/api/artists/list
+
+</details>
+<details>
+<summary>APPOINTMENTS ENDPOINTS</summary>
+
+- APPOINTMENTS
+
+  - CREATE
+
+          POST http://localhost:3000/api/appointments/newAppointment
+
+    body:
+
+    ```js
+        {
+            "user_id": "1",
+            "date": "2022/07/03",
+            "time": "17:00"
+        }
+
+    ```
+
+  - UPDATE
+
+          PATCH http://localhost:3000/api/appointments/:id
+
+    body:
+
+    ```js
+        {
+            "user_id": "1",
+            "date": "2022/07/03",
+            "time": "17:00"
+        }
+    ```
+
+  - DELETE
+
+          DELETE http://localhost:3000/api/appointments/:id
+
+    body:
+
+    ```js
+        {
+           "id": "1"
+        }
+    ```
+
+  - GET ALL APPOINTMENTS BY CUSTOMER
+
+          GET http://localhost:3000/api/appointments/mysessions/:id
+
+  - GET ALL APPOINTMENTS BY ARTIST
+
+          GET http://localhost:3000/api/appointments/myappointments/:id
+
 </details>
 
 
