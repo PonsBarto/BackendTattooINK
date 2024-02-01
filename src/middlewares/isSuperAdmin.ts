@@ -4,7 +4,6 @@ import { UserRoles } from "../constants/UserRoles";
 
 const isSuperAdmin = (req: any, res: Response, next: NextFunction) => {
 
-       console.log(req.tokenData);
     
        const roles = req.tokenData.userRoles;
     

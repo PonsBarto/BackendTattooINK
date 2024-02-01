@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { CreateUserRequestBody, LoginUserRequestBody, TokenData,
-} from "../types/types";
+import { CreateUserRequestBody, LoginUserRequestBody, TokenData,} from "../types/types";
 import { User } from "../models/User";
 import bcrypt from "bcrypt";
 import { AppDataSource } from "../database/data-source";
@@ -171,15 +170,12 @@ export class UserController {
         updated_at: new Date, 
         customerAppointments: [] 
       }; 
-      console.log("1") 
       const newUser = await userRepository.save(dataUser); 
         const artistRepository = AppDataSource.getRepository(Artist); 
         const newArtist = await artistRepository.save({ 
           user: newUser, 
           portfolio: "https://", 
         }); 
-       
-      console.log("2") 
       res.status(201).json(newArtist); 
     } catch (error: any) { 
       console.error("Error while creating artist:", error); 

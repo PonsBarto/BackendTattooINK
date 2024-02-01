@@ -23,26 +23,22 @@ export class CreateUsers1705568255708 implements MigrationInterface {
                       name: "name",
                       type: "varchar",
                       length: "255",
-                      isNullable: true
                   },
                   {
                       name: "last_name",
                       type: "varchar",
                       length: "255",
-                      isNullable: true
                   },
                   {
                       name: "address",
                       type: "varchar",
                       length: "255",
-                      isNullable: true
                   },
                   {
                       name: "email",
                       type: "varchar",
                       length: "100",
                       isUnique: true,
-                      isNullable: true
                   },
                   {
                       name: "password_hash",
@@ -55,7 +51,6 @@ export class CreateUsers1705568255708 implements MigrationInterface {
                       type: "int",
                       length: "20",
                       isUnique: true,
-                      isNullable: true
                   },
                   {
                       name: "created_at",
