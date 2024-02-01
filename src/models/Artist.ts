@@ -2,18 +2,22 @@ import { BaseEntity, Column, PrimaryGeneratedColumn, OneToMany, Entity, OneToOne
 import { User } from "./User";
 import { Design } from "./Design";
 import { Appointment } from "./Appointment";
+import { UserRoles } from "../constants/UserRoles";
 
 
-@Entity("artists")
-export class Artist {
+@Entity("artist")
+export class Artists {
     @PrimaryGeneratedColumn()
     id!: number;
+
+    @Column()
+    user_id!: number;
 
     @Column()
     portfolio?: string;
 
     @Column()
-    created_at!: Date;
+    create_at!: Date;
 
     @Column()
     updated_at!: Date;
@@ -22,9 +26,9 @@ export class Artist {
     design!: Design[];
 
     @OneToMany(() => Appointment, (appointment) => appointment.artist)
-    customerAppointments!: Appointment[];
+    artistAppointments!: Appointment[];
 
-    @OneToOne(() => User, user => user.artist)
+    @OneToOne(() => User, (user) => user.artist)
     @JoinColumn({ name: "user_id" })
     user!: User;
 }

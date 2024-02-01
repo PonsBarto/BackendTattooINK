@@ -3,7 +3,7 @@ import { User } from "./User";
 import { Artist } from "./Artist";
 
 @Entity("appointments")
-export class Appointment extends BaseEntity {
+export class Appointment {
     @PrimaryGeneratedColumn()
     id!: number;
 
@@ -17,7 +17,7 @@ export class Appointment extends BaseEntity {
     date!: Date;
     
     @Column({ type: "time" })
-    time!: Date;
+    hour!: Date;
     
     @Column()
     created_at!: Date;
@@ -25,12 +25,12 @@ export class Appointment extends BaseEntity {
     @Column()
     updated_at!: Date;
 
-    @ManyToOne(() => User, (user) => user.role)
-    @JoinColumn ({name: "user_id"})
+    @ManyToOne(() => User, (user) => user.roles)
+    @JoinColumn ({name: "user_id", referencedColumnName:"id"})
     user!: User;
 
     @ManyToOne(() => Artist, (artist) => artist.user)
-    @JoinColumn ({name: "artist_id"})
+    @JoinColumn ({name: "artist_id", referencedColumnName:"id"})
     artist!: Artist;
 
 }

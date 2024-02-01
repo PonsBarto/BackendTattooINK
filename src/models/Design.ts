@@ -14,7 +14,7 @@ export class Design extends BaseEntity {
     style!: string;
 
     @Column()
-    image!: string;
+    picture!: string;
 
     @Column()
     created_at!: Date;
