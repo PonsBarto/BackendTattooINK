@@ -33,7 +33,7 @@ export const seedArtistsWithUser = async (count: number) => {
   const artist = artistFactory.createMany(count);
 
   artist.forEach((artist, index) => {
-    artist.user = users[index];
+    artist.users = users[index];
   });
 
   await artistRepository.save(artist);
