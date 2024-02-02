@@ -1,4 +1,4 @@
-import { TokenData } from ".";
+import { TokenData } from "./types";
 
 declare global {
    namespace Express {

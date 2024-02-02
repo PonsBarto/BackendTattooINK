@@ -1,28 +1,28 @@
-export interface CreateAppointmentsRequestBody {
-  user_id: number;
-  date: Date;
-  time: string;
-}
 export interface CreateUserRequestBody {
+  username: string;
   name: string;
-  last_name: string;
-  address: string;
-  email: string;  
-  password_hash: string;   
-  phone_number: number;
+  surname: string;
+  password_hash: string;
+  email: string;
 }
-
 export interface CreateArtistRequestBody {
- user_id: string;
- portfolio: string;
+  user_id: number;
+  portfolio: string;
 }
 
 export interface LoginUserRequestBody {
   email: string;
-  password_hash: string;
+  password: string;
 }
 
 export interface TokenData {
   userId: string;
   userRoles: string[];
+}
+
+export interface CreateAppointmentsRequestBody {
+  user_id: number;
+  artist_id: number;
+  date: Date;
+  hour: string;
 }

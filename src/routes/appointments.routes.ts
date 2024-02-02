@@ -1,17 +1,17 @@
 import express from "express";
 import { AppointmentController } from "../controllers/AppointmentController";
 import { auth } from "../middlewares/auth";
-import { isSuperAdmin } from "../middlewares/isSuperAdmin";
-import { isArtist } from "../middlewares/isArtist";
+import { isAdmin } from "../middlewares/isAdmin";
+import { isSuperAdmin } from "../middlewares/IsSuperAdmin";
+import { isUser } from "../middlewares/isUser";
 
 const router = express.Router();
 const appointmentController = new AppointmentController();
 
-router.get("/get", auth, isArtist, appointmentController.getAll)
-router.post("/newAppointment", auth, appointmentController.create)
-router.get("/mysessions/:id", auth, appointmentController.getById)
-router.get("/myappointments/:id",auth, isArtist, appointmentController.getByArtist)
-router.patch("/:id", auth, appointmentController.updateAppointment);
-router.delete("/:id", auth, isArtist, appointmentController.deleteAppointment);
+router.get("/", isSuperAdmin, appointmentController.getAll);
+router.get("/:id", auth, appointmentController.getById);
+router.post("/", appointmentController.create);
+router.patch("/:id", appointmentController.update);
+router.delete("/:id", appointmentController.delete);
 
 export default router;

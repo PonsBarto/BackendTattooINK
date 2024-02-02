@@ -1,45 +1,59 @@
-import { BaseEntity, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { Role } from "./Role";
-import { Artist } from "./Artist";
+import { Artists } from "./Artist";
 import { Appointment } from "./Appointment";
 
 @Entity("users")
 export class User {
-    @PrimaryGeneratedColumn()
-    id?: number;
+  @PrimaryGeneratedColumn()
+  id?: number;
 
-    @Column({unique: true})
-    name!: string;
+  @Column({ unique: true })
+  username!: string;
 
-    @Column()
-    surname!: string;
+  @Column()
+  name!: string;
 
-    @Column()
-    photo?: string;
+  @Column()
+  surname!: string;
 
-    @Column()
-    email!: string;
+  @Column()
+  photo?: string;
 
-    @Column()
-    password_hash!: string;
+  @Column()
+  password_hash!: string;
 
-    @ManyToOne(() => Role, (role) => role.users)
-    @JoinTable ({
-        name: "role_id",
-        joinColumn: {
-            name: "user_id",
-            referencedColumnName: "id",
-         },
-         inverseJoinColumn: {
-            name: "role_id",
-            referencedColumnName: "id",
-         },})
-  
-    roles!: Role[];
-    
-    @OneToOne(() => Artist, (artists) => artists.user)
-    artist?: Artist;
-    
-    @OneToMany(() => Appointment, (appointment) => appointment.user_id)
-    customerAppointments!: Appointment[];
+  @Column({ unique: true })
+  email!: string;
+
+  @ManyToMany(() => Role, (role) => role.users)
+  @JoinTable({
+    name: "users_roles",
+    joinColumn: {
+      name: "user_id",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "role_id",
+      referencedColumnName: "id",
+    },
+  })
+  roles!: Role[];
+
+  @OneToOne(() => Artists, (artists) => artists.users)
+  artist?: Artists;
+
+  @OneToMany(() => Appointment, (appointment) => appointment.user_id)
+  clientAppointments?: Appointment[];
 }

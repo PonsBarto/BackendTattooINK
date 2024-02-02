@@ -31,7 +31,7 @@ export class CreateAppointments1706821390750 implements MigrationInterface {
           },
           {
             name: "hour",
-            type: "varchar",
+            type: "time",
             length: "255",
             isNullable: true,
           },

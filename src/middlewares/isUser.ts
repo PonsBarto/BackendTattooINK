@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
-const isSuperAdmin = (req: any, res: Response, next: NextFunction) => {
+export const isUser = (req: Request, res: Response, next: NextFunction) => {
   console.log(req.tokenData);
 
   const roles = req.tokenData.userRoles;
 
-  if (!roles.includes("super_admin")) {
+  if (!roles.includes("user")) {
     return res.status(StatusCodes.FORBIDDEN).json({
       message: "You are not allowed to access this resource",
     });
@@ -14,5 +14,3 @@ const isSuperAdmin = (req: any, res: Response, next: NextFunction) => {
 
   next();
 };
-
-export { isSuperAdmin };
