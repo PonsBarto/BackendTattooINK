@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class CreateArtists1706821388696 implements MigrationInterface {
+export class CreateAppointments1706821390755 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: "artist",
+        name: "appointments",
         columns: [
           {
             name: "id",
@@ -16,12 +16,24 @@ export class CreateArtists1706821388696 implements MigrationInterface {
           {
             name: "user_id",
             type: "int",
-            isPrimary: true,
+            isNullable: true,
           },
           {
-            name: "portfolio",
+            name: "artist_id",
+            type: "int",
+            isNullable: true,
+          },
+          {
+            name: "date",
             type: "varchar",
             length: "255",
+            isNullable: true,
+          },
+          {
+            name: "hour",
+            type: "time",
+            length: "5",
+            isNullable: true,
           },
           {
             name: "created_at",
@@ -42,6 +54,12 @@ export class CreateArtists1706821388696 implements MigrationInterface {
             referencedColumnNames: ["id"],
             onDelete: "CASCADE",
           },
+          {
+            columnNames: ["artist_id"],
+            referencedTableName: "artist",
+            referencedColumnNames: ["id"],
+            onDelete: "CASCADE",
+          },
         ],
       }),
       true
@@ -49,6 +67,6 @@ export class CreateArtists1706821388696 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable("artist");
+    await queryRunner.dropTable("appointments");
   }
 }

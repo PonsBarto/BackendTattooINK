@@ -1,9 +1,8 @@
 import express from "express";
 import { AppointmentController } from "../controllers/AppointmentController";
 import { auth } from "../middlewares/auth";
-import { isAdmin } from "../middlewares/isAdmin";
 import { isSuperAdmin } from "../middlewares/IsSuperAdmin";
-import { isUser } from "../middlewares/isUser";
+
 
 const router = express.Router();
 const appointmentController = new AppointmentController();

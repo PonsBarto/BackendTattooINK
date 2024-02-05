@@ -59,122 +59,164 @@ Tecnologías utilizadas:
 6. ``` $ npm run dev ``` 
 
 ## Endpoints
-
 <details>
-<summary>USERS ENDPOINTS</summary>
+<summary>Endpoints</summary>
+
+- AUTH
+    - REGISTER
+
+            POST http://localhost:3000/auth/register
+        body:
+        
+            {
+                "username": "Barto",
+                "name": "Bartomeu",
+                "surname": "Pons",
+                "email": "barto@example.com",
+                "password": "123456"
+            }
+        
+
+    - LOGIN
+
+            POST http://localhost:3000/auth/login 
+        body:
+        
+            {
+                "email": "barto@example.com",
+                "password": "123456"
+            }
+        
 
 - USERS
 
-  - REGISTER
+    - Crear User
 
-          POST http://localhost:3000/api/register
+            POST http://localhost:3000/api/users
+            
+        body:
+       
+     
+           {
+            "username": "UserClient",
+            "name": "UserClie",
+            "surname": "Cuser",
+            "password_hash": "123456",
+            "email": "cuser@example.com"
+            }
 
+    
+    -  Obtener todos los usuarios (super_admin)
+    
+            GET http://localhost:3000/api/users
+
+    
+    - Get user by id 
+    
+            GET http://localhost:3000/api/users/:id
+
+            
+    - Update user info 
+    
+            PATCH http://localhost:3000/api/users/:id
+        body: 
+          
+                
+                {
+                "username" : "Pepe",
+                "name": "Jose",
+                "surname": "Perez",
+                "password_hash": "123456",
+                "email" : "Pepe@example.com"
+                 }
+                    
+            
+
+            
+- ARTISTAS
+    
+    -Crear tatuador
+        
+      POST http://localhost:3000/api/artist
+      
+    body:  
+        
+    
+            {
+                "username" : "UserArtis",
+                "name": "UserAr",
+                "surname": "Auser",
+                "password_hash": "123456",
+                "email" : "auser@example.com"
+            }
+
+    -Ver tatuador por id
+        
+        GET http://localhost:3000/api/artist/16
+
+    -Perfil del tatuador (con id)
+
+        GET http://localhost:3000/api/artist/artistprofile/17
+        
+    -Ver todos los tatuadores(super_admin)
+    
+        GET http://localhost:3000/api/artist
+          
+          
+           
+
+- CITAS
+
+    -Crear Cita
+
+            POST http://localhost:3000/api/appointment
+            
     body:
-
-    ```js
-        {
-            "name":"Pepe",
-            "last_name":"Calavera",
-            "address":"Palma de Mallorca 125",
-            "email":"pepcala2@liamg.com",
-            "password_hash":"123456",
-            "phone_number":"123456789"
-        }
-    ```
-
-  - LOGIN
-
-          POST http://localhost:3000/api/login
-
-    body:
-
-    ```js
-        {
-            "email": "pepcala2@liamg.com",
-            "password": "123456"
-        }
-    ```
-
-  - PROFILE
-
-          GET http://localhost:3000/api/:id
-
-    - Insertar ID de user para  mostrar los datos
-
-  - UPDATE
-
-          PATCH http://localhost:3000/api/:id
-
-    body:
-
-    ```js
-        {
-            "name": "NewUser  ",
-            "password": "NewPrinces1234@",
-            "phone_number": "55555559"
-        }
-    ```
-
-  - GET ALL ARTISTS
-
-          GET http://localhost:3000/api/artists/list
-
+      
+            
+            {
+                "user_id": 19,
+                "artist_id": 2,
+                "date": "2024-01-12",
+                "hour": "12:00h"
+            }
+            
+    -Ver todas las citas (super_admin)
+        
+            GET http://localhost:3000/api/appointment
+            
+    -Actualizar citas (con id)
+    
+            PATCH http://localhost:3000/api/appointment/1
+      
+    -Borrar cita (con id de cita)
+    
+            DELETE http://localhost:3000/api/appointment/1
+            
+    
+        
 </details>
-<details>
-<summary>APPOINTMENTS ENDPOINTS</summary>
 
-- APPOINTMENTS
+## Contribuciones
+Las sugerencias y aportaciones son siempre bienvenidas.  
 
-  - CREATE
+Puedes hacerlo de dos maneras:
 
-          POST http://localhost:3000/api/appointments/newAppointment
-
-    body:
-
-    ```js
-        {
-            "user_id": "1",
-            "date": "2022/07/03",
-            "time": "17:00"
-        }
-
-    ```
-
-  - UPDATE
-
-          PATCH http://localhost:3000/api/appointments/:id
-
-    body:
-
-    ```js
-        {
-            "user_id": "1",
-            "date": "2022/07/03",
-            "time": "17:00"
-        }
-    ```
-
-  - DELETE
-
-          DELETE http://localhost:3000/api/appointments/:id
-
-    body:
-
-    ```js
-        {
-           "id": "1"
-        }
-    ```
-
-  - GET ALL APPOINTMENTS BY CUSTOMER
-
-          GET http://localhost:3000/api/appointments/mysessions/:id
-
-  - GET ALL APPOINTMENTS BY ARTIST
-
-          GET http://localhost:3000/api/appointments/myappointments/:id
-
-</details>
+1. Abriendo una issue
+2. Crea un fork del repositorio
+    - Crea una nueva rama  
+        ```
+        $ git checkout -b feature/nombreUsuario-mejora
+        ```
+    - Haz un commit con tus cambios 
+        ```
+        $ git commit -m 'feat: mejora X cosa'
+        ```
+    - Haz push a la rama 
+        ```
+        $ git push origin feature/nombreUsuario-mejora
+        ```
+    - Abre una solicitud de Pull Request
 
 
 ## Contribuciones
