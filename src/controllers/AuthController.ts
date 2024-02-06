@@ -37,7 +37,6 @@ export class AuthController {
         message: "Register successfully",
       });
     } catch (error: any) {
-      console.error("Error while register:", error);
       res.status(500).json({
         message: "Error while register",
         error: error.message,

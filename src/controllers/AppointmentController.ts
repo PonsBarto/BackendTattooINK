@@ -130,7 +130,6 @@ export class AppointmentController implements Controller {
       await appointmentRepository.save(newAppointment);
       res.status(201).json(newAppointment);
     } catch (error: any) {
-      console.error("Error while creating Appointment:", error);
       res.status(500).json({
         message: "Error while creating Appointment",
         error: error.message,

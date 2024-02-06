@@ -83,7 +83,6 @@ export class ArtistController implements Controller {
 
       res.status(201).json("Artist create successfully");
     } catch (error: any) {
-      console.error("Error while creating artist:", error);
       res.status(500).json({
         message: "Error while creating artis",
         error: error.message,
@@ -142,14 +141,17 @@ export class ArtistController implements Controller {
         artist: true,
         id: artist?.user_id,
       });
-      console.log(userArtist, "Soy linea 152");
 
       if (!userArtist) {
         return res.status(404).json({
           message: "Artist not found",
         });
       }
-      res.status(200).json({ userArtist, artist });
+      const response = {
+        ...artist,
+        ...userArtist,
+     }
+      res.status(200).json(response);
     } catch (error) {
       res.status(500).json({
         message: "Error while getting artist",

@@ -127,7 +127,6 @@ export class UserController implements Controller {
         message: "User deleted successfully",
       });
     } catch (error: any) {
-      console.error("Error while delete users:", error);
       res.status(500).json({
         message: "Error while delete users",
         error: error.message,
