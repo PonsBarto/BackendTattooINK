@@ -127,10 +127,31 @@ export class UserController implements Controller {
         message: "User deleted successfully",
       });
     } catch (error: any) {
+      console.error("Error while delete users:", error);
       res.status(500).json({
         message: "Error while delete users",
         error: error.message,
       });
+    }
+  }
+  async userProfile(req: Request, res: Response): Promise<Response<any>> {
+    try {
+      const email = req.tokenData.email;
+      const userRepository = AppDataSource.getRepository(User);
+      const profileUser = await userRepository.findOneBy({
+        email,
+      });
+
+      if (!profileUser) {
+        return res.status(404).json({ message: "Profile not found" });
+      } else {
+        return res.status(200).json({ profileUser });
+      }
+    } catch (err) {
+      console.error("Error in the profile controller", err);
+      return res
+        .status(401)
+        .json({ status: "Error", message: "Not authorized." });
     }
   }
 }

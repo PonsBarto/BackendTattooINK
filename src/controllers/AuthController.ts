@@ -90,6 +90,7 @@ export class AuthController {
       const roles = user.roles.map((role) => role.role_name);
 
       const tokenPayload: TokenData = {
+        email: user.email,
         userId: user.id?.toString() as string,
         userRoles: roles,
       };
