@@ -35,7 +35,7 @@ export class Appointment {
   @JoinColumn({ name: "user_id", referencedColumnName: "id" })
   user?: User;
 
-  @ManyToOne(() => Artists, (artist) => artist.users)
+  @ManyToOne(() => Artists, (artist) => artist.user)
   @JoinColumn({ name: "artist_id", referencedColumnName: "id" })
   artist?: Artists;
 }

@@ -30,7 +30,7 @@ export class Artists {
 
   @OneToOne(() => User, (user) => user.artist)
   @JoinColumn({ name: "user_id" })
-  users!: User;
+  user!: User;
 
   @OneToMany(() => Design, (design) => design)
   design!: Design[];

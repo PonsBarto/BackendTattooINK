@@ -36,7 +36,7 @@ export const ProfileController = {
           .innerJoinAndSelect('artists.user', 'user')
           .where('artists.id In(:...artistIds)', { artistIds })
           .getMany()
-          .then(artistProfiles => artistProfiles.map(artistProfile => artistProfile.users.name));
+          .then(artistProfiles => artistProfiles.map(artistProfile => artistProfile.user.name));
 
         return res.status(200).json({ profileUser, appointments, userArtistIds });
       }

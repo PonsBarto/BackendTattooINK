@@ -51,7 +51,7 @@ export class User {
   })
   roles!: Role[];
 
-  @OneToOne(() => Artists, (artists) => artists.users)
+  @OneToOne(() => Artists, (artists) => artists.user)
   artist?: Artists;
 
   @OneToMany(() => Appointment, (appointment) => appointment.user_id)

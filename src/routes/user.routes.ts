@@ -6,7 +6,7 @@ import { isSuperAdmin } from "../middlewares/IsSuperAdmin";
 const router = express.Router();
 const userController = new UserController();
 
-router.get("/", auth, isSuperAdmin, userController.getAll);
+router.get("/", userController.getAll);
 router.get("/:profile", auth, userController.getById);
 router.post("/", userController.create);
 router.patch("/:id", auth, userController.update);

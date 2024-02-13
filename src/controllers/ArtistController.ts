@@ -5,23 +5,36 @@ import { AppDataSource } from "../database/data-source";
 import { Artists } from "../models/Artist";
 import { UserRoles } from "../constants/UserRoles";
 import {
-   CreateUserRequestBody,
-   CreateArtistRequestBody,
-   TokenData,
+  CreateUserRequestBody,
+  CreateArtistRequestBody,
+  TokenData,
 } from "../types/types";
 import bcrypt from "bcrypt";
 import { StatusCodes } from "http-status-codes";
 import { isAdmin } from "../middlewares/isAdmin";
 import { Role } from "../models/Role";
 import { Admin } from "typeorm";
+import { Relation } from "typeorm";
 
 export class ArtistController implements Controller {
   async getAll(req: Request, res: Response): Promise<void | Response<any>> {
     try {
       const artistRepository = AppDataSource.getRepository(Artists);
 
-      const allArtists = await artistRepository.findBy({});
-      res.status(200).json(allArtists);
+      const allArtists = await artistRepository.find({
+        relations: ["user"],
+      });
+
+      const userArtistIds = allArtists.map((artist) => {
+        return {
+          id: artist.id,
+          name: artist.user.name,
+          surname: artist.user.surname,
+          photo: artist.user.photo,
+          email: artist.user.email,
+        };
+      });
+      res.status(200).json({ userArtistIds });
     } catch (error) {
       res.status(500).json({
         message: "Error while getting artist",
@@ -150,7 +163,7 @@ export class ArtistController implements Controller {
       const response = {
         ...artist,
         ...userArtist,
-     }
+      };
       res.status(200).json(response);
     } catch (error) {
       res.status(500).json({
