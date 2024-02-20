@@ -23,16 +23,16 @@ export class User {
   username!: string;
 
   @Column()
-  name!: string;
+  name?: string;
 
   @Column()
-  surname!: string;
+  surname?: string;
 
   @Column()
   photo?: string;
 
-  @Column()
-  password_hash!: string;
+  @Column({select: false} )
+    password!: string;
 
   @Column({ unique: true })
   email!: string;

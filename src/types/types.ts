@@ -1,11 +1,16 @@
 export interface CreateUserRequestBody {
   username: string;
-  name: string;
-  surname: string;
-  password_hash: string;
+  name?: string;
+  surname?: string;
+  password: string;
   email: string;
 }
 export interface CreateArtistRequestBody {
+  username: string;
+  name?: string;
+  surname?: string;
+  password: string;
+  email: string;
   user_id: number;
   portfolio: string;
 }

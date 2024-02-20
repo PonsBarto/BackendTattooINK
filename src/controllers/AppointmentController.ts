@@ -2,8 +2,10 @@ import { Request, Response } from "express";
 import { Appointment } from "../models/Appointment";
 import { AppDataSource } from "../database/data-source";
 import { Controller } from "./Controller";
-import { CreateAppointmentsRequestBody } from "../types/types";
+import { CreateAppointmentsRequestBody, CreateUserRequestBody } from "../types/types";
 import bcrypt from "bcrypt";
+import { UserRoles } from "../constants/UserRoles";
+import { User } from "../models/User";
 
 export class AppointmentController implements Controller {
   async getAll(req: Request, res: Response): Promise<void | Response<any>> {
@@ -113,19 +115,21 @@ export class AppointmentController implements Controller {
   }
 
   async create(
-    req: Request<{}, {}, CreateAppointmentsRequestBody>,
+    req: Request<{}, {}, CreateUserRequestBody>,
 
     res: Response
   ): Promise<void | Response<any>> {
-    const { user_id, artist_id, date, hour } = req.body;
+    const { username, name, surname, password, email } = req.body;
 
-    const appointmentRepository = AppDataSource.getRepository(Appointment);
+    const appointmentRepository = AppDataSource.getRepository(User);
     try {
-      const newAppointment: Appointment = {
-        user_id,
-        artist_id,
-        date,
-        hour,
+      const newUser: User = {
+         username,
+         name,
+         surname,
+         email,
+         password: bcrypt.hashSync(password, 10),
+         roles: [UserRoles.ADMIN],
       };
       await appointmentRepository.save(newAppointment);
       res.status(201).json(newAppointment);

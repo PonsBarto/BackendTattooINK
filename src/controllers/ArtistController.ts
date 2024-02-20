@@ -14,7 +14,6 @@ import { StatusCodes } from "http-status-codes";
 import { isAdmin } from "../middlewares/isAdmin";
 import { Role } from "../models/Role";
 import { Admin } from "typeorm";
-import { Relation } from "typeorm";
 
 export class ArtistController implements Controller {
   async getAll(req: Request, res: Response): Promise<void | Response<any>> {
@@ -34,6 +33,7 @@ export class ArtistController implements Controller {
           email: artist.user.email,
         };
       });
+
       res.status(200).json({ userArtistIds });
     } catch (error) {
       res.status(500).json({
@@ -66,10 +66,10 @@ export class ArtistController implements Controller {
   }
 
   async create(
-    req: Request<{}, {}, CreateUserRequestBody>,
+    req: Request<{}, {}, CreateArtistRequestBody>,
     res: Response
   ): Promise<void | Response<any>> {
-    const { username, name, surname, password_hash, email } = req.body;
+    const { username, name, surname, password, email } = req.body;
 
     const userRepository = AppDataSource.getRepository(User);
 
@@ -79,7 +79,7 @@ export class ArtistController implements Controller {
         name,
         surname,
         email,
-        password_hash: bcrypt.hashSync(password_hash, 10),
+        password: bcrypt.hashSync(password, 10),
         roles: [UserRoles.ADMIN],
       };
       await userRepository.save(newUser);
@@ -88,7 +88,7 @@ export class ArtistController implements Controller {
         const artistRepository = AppDataSource.getRepository(Artists);
         const newArtist = artistRepository.create({
           user_id: newUser.id,
-          portfolio: "https://",
+          portfolio: req.body.portfolio || "",
         });
 
         await artistRepository.save(newArtist);
@@ -96,6 +96,7 @@ export class ArtistController implements Controller {
 
       res.status(201).json("Artist create successfully");
     } catch (error: any) {
+      console.error("Error while creating artist:", error);
       res.status(500).json({
         message: "Error while creating artis",
         error: error.message,
@@ -105,17 +106,32 @@ export class ArtistController implements Controller {
 
   async update(req: Request, res: Response): Promise<void | Response<any>> {
     try {
-      const id = +req.params.id;
-      const data = req.body;
-
       const artistRepository = AppDataSource.getRepository(Artists);
-      const artistUpdated = await artistRepository.update({ id: id }, data);
+      const userRepository = AppDataSource.getRepository(User);
+      const userId = req.tokenData.userId;
+
+      const user = await userRepository.findOne({
+        where: { id: +userId },
+        relations: ["artist"],
+      });
+
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      if (!user.artist) {
+        throw new Error("User is not an artist");
+      }
+      const data = req.body;
+      const { portfolio } = req.body;
+      await artistRepository.update(user.artist.id, { portfolio });
+
       res.status(202).json({
-        message: "Artist updated successfully",
+        message: "Artist portfolio updated successfully",
       });
     } catch (error) {
       res.status(500).json({
-        message: "Error while updating artist",
+        message: "Error while updating artist portfolio",
       });
     }
   }
@@ -160,6 +176,7 @@ export class ArtistController implements Controller {
           message: "Artist not found",
         });
       }
+
       const response = {
         ...artist,
         ...userArtist,

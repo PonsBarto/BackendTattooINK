@@ -22,6 +22,7 @@ export class CreateArtists1706821388694 implements MigrationInterface {
             name: "portfolio",
             type: "varchar",
             length: "255",
+            default: "", 
           },
           {
             name: "created_at",

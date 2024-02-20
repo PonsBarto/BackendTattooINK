@@ -13,37 +13,38 @@ import { UserRoles } from "../constants/UserRoles";
 import { Controller } from "./Controller";
 import { AuthController } from "./AuthController";
 import { Filter } from "typeorm";
+import { Role } from "../models/Role";
 
 export class UserController implements Controller {
   async getAll(req: Request, res: Response): Promise<void | Response<any>> {
     try {
       const userRepository = AppDataSource.getRepository(User);
+      const userRoles = AppDataSource.getRepository(Role);
 
-
-      const page = req.query.page  ? Number(req.query.page) : null;
+      const page = req.query.page ? Number(req.query.page) : null;
       const limit = req.query.limit ? Number(req.query.limit) : null;
 
       interface filter {
         [key: string]: any;
-     }
-     const filter: filter = {
+      }
+      const filter: filter = {
         select: {
           username: true,
+          name: true,
+          surname: true,
+          photo: true,
           email: true,
           id: true,
         },
       };
-      if (page && limit ) {
-        filter.skip = ((page- 1) * limit)
+      if (page && limit) {
+        filter.skip = (page - 1) * limit;
+      }
+      if (limit) {
+        filter.take = limit;
+      }
 
-     }
-     if (limit) {
-        filter.take = (limit)
-     }
-
-     const [allUsers, count] = await userRepository.findAndCount(
-        filter
-     );
+      const [allUsers, count] = await userRepository.findAndCount(filter);
       res.status(200).json({
         count,
         page,
@@ -83,8 +84,7 @@ export class UserController implements Controller {
     req: Request<{}, {}, CreateUserRequestBody>,
     res: Response
   ): Promise<void | Response<any>> {
-    const { username, name, surname, password_hash, email } = req.body;
-
+    const { username, name, surname, password, email } = req.body;
     const userRepository = AppDataSource.getRepository(User);
 
     try {
@@ -93,7 +93,7 @@ export class UserController implements Controller {
         name,
         surname,
         email,
-        password_hash: bcrypt.hashSync(password_hash, 10),
+        password: bcrypt.hashSync(password, 10),
         roles: [UserRoles.USER],
       };
       await userRepository.save(newUser);
@@ -112,11 +112,13 @@ export class UserController implements Controller {
 
   async update(req: Request, res: Response): Promise<void | Response<any>> {
     try {
-      const id = +req.params.id;
+      const id = +req.tokenData.userId;
       const data = req.body;
 
       const userRepository = AppDataSource.getRepository(User);
       const userUpdated = await userRepository.update({ id: id }, data);
+      await userRepository.update({ id: id }, data);
+
       res.status(202).json({
         message: "User updated successfully",
       });
@@ -164,5 +166,24 @@ export class UserController implements Controller {
         .status(401)
         .json({ status: "Error", message: "Not authorized." });
     }
+  }
+  async getAllUsersFor(req: Request, res: Response): Promise<Response> {
+    const userRepository = AppDataSource.getRepository(User);
+    const profileUsers = await userRepository.find({
+      relations: {
+        roles: true,
+      },
+      select: {
+        username: true,
+        name: true,
+        email: true,
+        photo: true,
+        id: true,
+        roles: {
+          role_name: true,
+        },
+      },
+    });
+    return res.status(200).json(profileUsers);
   }
 }

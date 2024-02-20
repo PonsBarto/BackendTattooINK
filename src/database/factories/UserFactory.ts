@@ -13,7 +13,7 @@ export class UserFactory extends BaseFactory<User> {
     user.username = faker.internet.userName();
     user.name = faker.person.firstName();
     user.surname = faker.person.lastName();
-    user.password_hash = bcrypt.hashSync("12345678", 10);
+    user.password = bcrypt.hashSync("12345678", 10);
     user.photo = faker.image.avatar();
     user.email = faker.internet.email({
       allowSpecialCharacters: true,
