@@ -29,5 +29,5 @@ export class Design {
 
   @ManyToOne(() => Artists, (artists) => artists.user)
   @JoinColumn({ name: "artist_id" })
-  artist!: Artists;
+  artist?: Artists;
 }

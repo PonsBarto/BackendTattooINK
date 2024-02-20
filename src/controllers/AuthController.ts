@@ -17,7 +17,7 @@ export class AuthController {
     req: Request<{}, {}, CreateUserRequestBody>,
     res: Response
   ): Promise<void | Response<any>> {
-    const { username, name, surname, password_hash, email } = req.body;
+    const { username, name, surname, password, email } = req.body;
 
     const userRepository = AppDataSource.getRepository(User);
     const artistRepository = AppDataSource.getRepository(Artists);
@@ -28,7 +28,7 @@ export class AuthController {
         name,
         surname,
         email,
-        password_hash: bcrypt.hashSync(password_hash, 10),
+        password: bcrypt.hashSync(password, 10),
         roles: [UserRoles.USER],
       };
       await userRepository.save(newUser);
@@ -79,7 +79,7 @@ export class AuthController {
         });
       }
 
-      const isPasswordValid = bcrypt.compareSync(password, user.password_hash);
+      const isPasswordValid = bcrypt.compareSync(password, user.password);
 
       if (!isPasswordValid) {
         return res.status(StatusCodes.BAD_REQUEST).json({
