@@ -1,10 +1,5 @@
-//-Controlador de Express para manejar las solicitudes relacionadas con las citas
-/*
--Se importan varios módulos y clases necesarios para el funcionamiento del controlador, 
-como Request y Response de Express, el modelo Appointment, el repositorio de datos AppDataSource, 
-algunos tipos de datos, bcrypt para el cifrado de contraseñas, y otros modelos y constantes 
-relacionadas con usuarios y roles.
-*/
+//-Controlador para manejar las solicitudes relacionadas con las citas
+
 import { Request, Response } from "express";
 import { Appointment } from "../models/Appointment";
 import { AppDataSource } from "../database/data-source";
