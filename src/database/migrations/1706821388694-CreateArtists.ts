@@ -21,8 +21,8 @@ export class CreateArtists1706821388694 implements MigrationInterface {
           {
             name: "portfolio",
             type: "varchar",
-            length: "255",
-            default: "", 
+            length: "1255",
+            default: "'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr5Sk93IcLJVNbpXcttBOI54RC7NqNuYjjFQ&usqp=CAU'", 
           },
           {
             name: "created_at",

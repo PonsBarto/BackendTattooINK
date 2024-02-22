@@ -1,3 +1,10 @@
+//-Controlador de Express para manejar las solicitudes relacionadas con las citas
+/*
+-Se importan varios módulos y clases necesarios para el funcionamiento del controlador, 
+como Request y Response de Express, el modelo Appointment, el repositorio de datos AppDataSource, 
+algunos tipos de datos, bcrypt para el cifrado de contraseñas, y otros modelos y constantes 
+relacionadas con usuarios y roles.
+*/
 import { Request, Response } from "express";
 import { Appointment } from "../models/Appointment";
 import { AppDataSource } from "../database/data-source";
@@ -10,7 +17,17 @@ import bcrypt from "bcrypt";
 import { UserRoles } from "../constants/UserRoles";
 import { User } from "../models/User";
 
+/*
+-Se define una clase AppointmentController que implementa la interfaz Controller. 
+Esto asegura que la clase tenga ciertos métodos definidos
+*/
 export class AppointmentController implements Controller {
+/* 
+-El metodo getAll maneja la solicitud para obtener todas las citas.
+-Utiliza el perositorio de datos para encontrar y contar todas las citas, 
+aplicando paginacion si es necesario.
+-Responde con un objeto JASON que incluye la lista de citas y la informacion de paginacion.
+*/
   async getAll(req: Request, res: Response): Promise<void | Response<any>> {
     try {
       const appointmentRepository = AppDataSource.getRepository(Appointment);
@@ -45,7 +62,11 @@ export class AppointmentController implements Controller {
       });
     }
   }
-
+/*
+-Este metodo getById maneja la solicitud para obtener una cita por su ID.
+-Utiliza el repositorio de datos para buscar la cita por ID y la devuelve si se encuentra.
+-Si no se encuentra la cita, responde con un mensaje error.
+*/
   async getById(req: Request, res: Response): Promise<void | Response<any>> {
     try {
       const id = +req.params.id;
@@ -67,6 +88,9 @@ export class AppointmentController implements Controller {
       });
     }
   }
+  /*
+  -El metodo getByArtistId, es similar a getById, pero busca citas por el ID de artistas.
+  */
   async getByArtistId(
     req: Request,
     res: Response
@@ -92,6 +116,9 @@ export class AppointmentController implements Controller {
     }
   }
 
+  /*
+  -El metodo getByUserId, es similar a getById, pero busca citas por el ID de usuarios.
+  */
   async getByUserId(
     req: Request,
     res: Response
@@ -117,6 +144,11 @@ export class AppointmentController implements Controller {
     }
   }
 
+/*
+-Este metodo async create, maneja la solicitud para crear una nueva cita.
+-Extrae los datos de la solicitud, como el ID del usuario y del artista, la fecha y la hora.
+-Guarda la nueva cita en el repositorio de datos y responde con la cita creada.
+*/
   async create(
     req: Request<{}, {}, CreateAppointmentsRequestBody>,
 
@@ -143,6 +175,13 @@ export class AppointmentController implements Controller {
        });
     }
  }
+
+/*
+-Este método async update maneja la solicitud para actualizar una cita ya existente.
+-Extrae el ID de la cita y los nuevos datos de la solicitud.
+-Actualiza la cita en el repositorio de datos y responde con un mensaje de éxito
+o de error segun corresponda.
+*/
  async update(req: Request, res: Response): Promise<void | Response<any>> {
     try {
        const id = +req.params.id;
@@ -159,6 +198,12 @@ export class AppointmentController implements Controller {
        });
     }
  }
+
+ /*
+-Este método maneja la solicitud para eliminar una cita por su ID.
+-Extrae el ID de la cita de la solicitud y la elimina del repositorio de datos.
+-Responde con un mensaje de éxito o error según corresponda.
+ */
  async delete(req: Request, res: Response): Promise<void | Response<any>> {
     try {
        const id = +req.params.id;
