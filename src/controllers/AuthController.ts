@@ -1,3 +1,7 @@
+/*
+-Este AuthController que contiene dos métodos asincrónicos, register y login. Sirve para 
+manejar el registro y la autenticación de usuarios.
+*/
 import { Request, Response } from "express";
 import {
   CreateUserRequestBody,
@@ -13,6 +17,27 @@ import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
 
 export class AuthController {
+/*
+-Este metodo resiter es para registrar un nuevo usuario.
+
+-Recibe un objeto Request que contiene los datos del cuerpo de la solicitud 
+(CreateUserRequestBody), incluyendo username, name, surname, password, y email, y un objeto 
+Response para enviar la respuesta al cliente.
+
+-Extrae los datos del cuerpo de la solicitud.
+
+-Obtiene el repositorio de usuarios mediante AppDataSource.getRepository(User).
+-Crea un nuevo objeto de usuario con los datos proporcionados, incluyendo el hash de la contraseña 
+utilizando bcrypt.hashSync.
+
+-Guarda el nuevo usuario en la DB.
+
+-Envía una respuesta con el código de estado HTTP CREATED (201) y un mensaje indicando 
+que el registro fue exitoso.
+
+-Captura y maneja errores que puedan ocurrir durante el proceso, enviando un mensaje de error 
+y un código de estado HTTP INTERNAL_SERVER_ERROR (500) en caso de fallo.
+*/
   async register(
     req: Request<{}, {}, CreateUserRequestBody>,
     res: Response
@@ -44,6 +69,27 @@ export class AuthController {
     }
   }
 
+/*
+-El metodo login sirve para la Autentificacion de un usuario.
+
+-Similar al método register, recibe un objeto Request con los datos del cuerpo de la solicitud 
+(LoginUserRequestBody), incluyendo email y password, y un objeto Response.
+
+-Verifica que tanto el email como la contraseña hayan sido proporcionados.
+
+-Busca en la base de datos un usuario que coincida con el email proporcionado.
+
+-Si no encuentra un usuario o si la contraseña no es válida (comparando la contraseña proporcionada
+con el hash almacenado usando bcrypt.compareSync), devuelve un error con el código de estado 
+BAD_REQUEST (400) y un mensaje indicando que el email o la contraseña son incorrectos.
+
+-Si la autenticación es exitosa, genera un token JWT (jwt.sign) con la información del usuario 
+(payload), incluyendo email, ID del usuario, y roles, y lo envía en la respuesta junto con un 
+mensaje de éxito y el código de estado OK (200).
+
+-Maneja posibles errores durante el proceso, enviando un mensaje de error y un código de estado 
+INTERNAL_SERVER_ERROR (500) en caso de fallo.
+*/
   async login(
     req: Request<{}, {}, LoginUserRequestBody>,
     res: Response
