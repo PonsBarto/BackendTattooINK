@@ -16,15 +16,15 @@ export class CreateDesigns1706821392616 implements MigrationInterface {
           {
             name: "artist_id",
             type: "int",
-            isPrimary: true,
           },
           {
             name: "style",
-            type: "varchar",
-            length: "255",
+            type: "int",
+            length: "20",
+            isNullable: false,
           },
           {
-            name: "picture",
+            name: "image",
             type: "varchar",
             length: "255",
           },
@@ -43,7 +43,7 @@ export class CreateDesigns1706821392616 implements MigrationInterface {
         foreignKeys: [
           {
             columnNames: ["artist_id"],
-            referencedTableName: "artist",
+            referencedTableName: "artists",
             referencedColumnNames: ["id"],
             onDelete: "CASCADE",
           },
@@ -53,7 +53,5 @@ export class CreateDesigns1706821392616 implements MigrationInterface {
     );
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable("designs");
-  }
+  public async down(queryRunner: QueryRunner): Promise<void> {}
 }

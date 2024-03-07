@@ -18,7 +18,6 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
     const decoded = jwt.verify(token, "123") as JwtPayload;
 
     const decodedPayload: TokenData = {
-      email: decoded.email,
       userId: decoded.userId,
       userRoles: decoded.userRoles,
     };

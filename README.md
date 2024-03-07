@@ -59,142 +59,67 @@ Tecnologías utilizadas:
 6. ``` $ npm run dev ``` 
 
 ## Endpoints
+
 <details>
-<summary>Endpoints</summary>
-
-- AUTH
-    - REGISTER
-
-            POST http://localhost:3000/auth/register
-        body:
-        
-            {
-                "username": "Barto",
-                "name": "Bartomeu",
-                "surname": "Pons",
-                "email": "barto@example.com",
-                "password": "123456"
-            }
-        
-
-    - LOGIN
-
-            POST http://localhost:3000/auth/login 
-        body:
-        
-            {
-                "email": "barto@example.com",
-                "password": "123456"
-            }
-        
+<summary>USERS ENDPOINTS</summary>
 
 - USERS
 
-    - Crear User
+  - REGISTER
 
-            POST http://localhost:3000/api/users
-            
-        body:
-       
-     
-           {
-            "username": "UserClient",
-            "name": "UserClie",
-            "surname": "Cuser",
-            "password_hash": "123456",
-            "email": "cuser@example.com"
-            }
+          POST http://localhost:3000/api/register
 
-    
-    -  Obtener todos los usuarios (super_admin)
-    
-            GET http://localhost:3000/api/users
-
-    
-    - Get user by id 
-    
-            GET http://localhost:3000/api/users/:id
-
-            
-    - Update user info 
-    
-            PATCH http://localhost:3000/api/users/:id
-        body: 
-          
-                
-                {
-                "username" : "Pepe",
-                "name": "Jose",
-                "surname": "Perez",
-                "password_hash": "123456",
-                "email" : "Pepe@example.com"
-                 }
-                    
-            
-
-            
-- ARTISTAS
-    
-    -Crear tatuador
-        
-      POST http://localhost:3000/api/artist
-      
-    body:  
-        
-    
-            {
-                "username" : "UserArtis",
-                "name": "UserAr",
-                "surname": "Auser",
-                "password_hash": "123456",
-                "email" : "auser@example.com"
-            }
-
-    -Ver tatuador por id
-        
-        GET http://localhost:3000/api/artist/16
-
-    -Perfil del tatuador (con id)
-
-        GET http://localhost:3000/api/artist/artistprofile/17
-        
-    -Ver todos los tatuadores(super_admin)
-    
-        GET http://localhost:3000/api/artist
-          
-          
-           
-
-- CITAS
-
-    -Crear Cita
-
-            POST http://localhost:3000/api/appointment
-            
     body:
-      
-            
-            {
-                "user_id": 19,
-                "artist_id": 2,
-                "date": "2024-01-12",
-                "hour": "12:00h"
-            }
-            
-    -Ver todas las citas (super_admin)
-        
-            GET http://localhost:3000/api/appointment
-            
-    -Actualizar citas (con id)
+
+    ```js
+        {
+            "name":"user1",
+            "last_name":"one",
+            "address":"461 Kim Circle",
+            "email":"user1@user.com",
+            "password":"123456",
+            "phone_number":"123456789"
+        }
+    ```
+
+  - LOGIN
+
+          POST http://localhost:3000/api/login
+
+    body:
+
+    ```js
+        {
+            "email": "user1@user.com",
+            "password": "123456"
+        }
+    ```
+
+  - PROFILE
+
+          GET http://localhost:3000/api/:id
+
+    - Insertamos el ID del user para que nos muestre todos los datos
+
+  - UPDATE
+
+          PATCH http://localhost:3000/api/:id
+
+    body:
+
+    ```js
+        {
+            "name": "NewUserOne  ",
+            "password": "New1234@",
+            "phone_number": "1234567"
+        }
+    ```
+
+  - GET ALL ARTISTS
+
+          GET http://localhost:3000/api/artists/list
+
     
-            PATCH http://localhost:3000/api/appointment/1
-      
-    -Borrar cita (con id de cita)
-    
-            DELETE http://localhost:3000/api/appointment/1
-            
-    
-        
 </details>
 
 ## Contribuciones

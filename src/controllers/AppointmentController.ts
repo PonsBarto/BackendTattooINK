@@ -1,218 +1,220 @@
-//-Controlador para manejar las solicitudes relacionadas con las citas
-
 import { Request, Response } from "express";
 import { Appointment } from "../models/Appointment";
 import { AppDataSource } from "../database/data-source";
-import { Controller } from "./Controller";
-import {
-  CreateAppointmentsRequestBody,
-  CreateUserRequestBody,
-} from "../types/types";
-import bcrypt from "bcrypt";
-import { UserRoles } from "../constants/UserRoles";
+import { CreateAppointmentsRequestBody } from "../types/types";
+import { Artist } from "../models/Artist";
 import { User } from "../models/User";
 
-/*
--Se define una clase AppointmentController que implementa la interfaz Controller. 
-Esto asegura que la clase tenga ciertos métodos definidos
-*/
-export class AppointmentController implements Controller {
-/* 
--El metodo getAll maneja la solicitud para obtener todas las citas.
--Utiliza el perositorio de datos para encontrar y contar todas las citas, 
-aplicando paginacion si es necesario.
--Responde con un objeto JASON que incluye la lista de citas y la informacion de paginacion.
-*/
+//----------------------------------------------------------------------
+
+export class AppointmentController {
   async getAll(req: Request, res: Response): Promise<void | Response<any>> {
     try {
       const appointmentRepository = AppDataSource.getRepository(Appointment);
 
-      let { page, skip } = req.query;
+      const page = req.query.page ? Number(req.query.page) : null;
+      const limit = req.query.limit ? Number(req.query.limit) : null;
 
-      let currentPage = page ? +page : 1;
-      let itemsPerPage = skip ? +skip : 10;
+      interface filter {
+        [key: string]: any;
+      }
+      const filter: any = {
+        select: {
+          date: true,
+          time: true,
+          user_id: true,
+          artist_id: true,
+          id: true,
+        },
+          relations: ["artist", "artist.user", "user"]
+      };
+
+      if (page && limit) {
+        filter.skip = (page - 1) * limit;
+      }
+      if (limit) {
+        filter.take = limit;
+      }
 
       const [allAppointments, count] = await appointmentRepository.findAndCount(
-        {
-          skip: (currentPage - 1) * itemsPerPage,
-          take: itemsPerPage,
-          select: {
-            id: true,
-            user_id: true,
-            artist_id: true,
-            date: true,
-            hour: true,
-          },
-        }
+        filter
       );
+
+      const appointmentsWithArtistNames = allAppointments.map(appointment => ({
+        ...appointment,
+        artist_name: appointment.artist.user.name, // Assuming 'name' is the property for artist's name
+        user_name: appointment.user.name,
+        user_last_name: appointment.user.last_name,
+
+    }));
+
       res.status(200).json({
         count,
-        skip: itemsPerPage,
-        page: currentPage,
-        results: allAppointments,
+        limit,
+        page,
+        results: appointmentsWithArtistNames,
       });
     } catch (error) {
       res.status(500).json({
-        message: "Error while getting appointments",
+        message: "Error while getting users",
       });
     }
   }
-/*
--Este metodo getById maneja la solicitud para obtener una cita por su ID.
--Utiliza el repositorio de datos para buscar la cita por ID y la devuelve si se encuentra.
--Si no se encuentra la cita, responde con un mensaje error.
-*/
+
   async getById(req: Request, res: Response): Promise<void | Response<any>> {
     try {
       const id = +req.params.id;
       const appointmentRepository = AppDataSource.getRepository(Appointment);
-      const appointments = await appointmentRepository.findOneBy({
-        id: id,
+      const myAppointments = await appointmentRepository.find({
+        where: { user_id: id }, // Filtrar citas por el ID del usuario
+        relations: ["artist", "artist.user"], // Cargar las relaciones del artista y del usuario asociado
+        select: ["id", "date", "time", "artist"], // Seleccionar solo los campos necesarios
       });
 
-      if (!appointments) {
-        return res.status(404).json({
-          message: "Appointment not found",
-        });
-      }
+      // Mapear las citas para incluir el nombre del artista
+      const appointmentsWithArtistName = myAppointments.map((appointment) => ({
+        id: appointment.id,
+        date: appointment.date,
+        time: appointment.time,
+        artist: {
+          id: appointment.artist.id,
+          name: appointment.artist.user.name,
+        },
+      }));
 
-      res.status(200).json(appointments);
+      res.status(200).json(appointmentsWithArtistName);
     } catch (error) {
       res.status(500).json({
         message: "Error while getting appointments",
       });
     }
   }
-  /*
-  -El metodo getByArtistId, es similar a getById, pero busca citas por el ID de artistas.
-  */
-  async getByArtistId(
+
+  async getByArtist(
     req: Request,
     res: Response
   ): Promise<void | Response<any>> {
     try {
-      const id = +req.params.id;
-      const appointmentRepository = AppDataSource.getRepository(Appointment);
-      const appointments = await appointmentRepository.findBy({
-        artist_id: id,
-      });
-
-      if (!appointments) {
-        return res.status(404).json({
-          message: "Appointment not found",
-        });
+      const userId = +req.params.id; // Obtener el user_id de los parámetros de la ruta
+      const userRepository = AppDataSource.getRepository(User);
+      
+      // Buscar el usuario con la relación con el artista
+      const user = await userRepository
+        .createQueryBuilder("user")
+        .leftJoinAndSelect("user.artist", "artist")
+        .where("user.id = :userId", { userId })
+        .getOne();
+  
+      // Si el usuario no existe, devuelve un error 404
+      if (!user || !user.artist) {
+        return res.status(404).json({ message: "User or associated artist not found" });
       }
-
-      res.status(200).json(appointments);
+  
+      const artistId = user.artist.id; // Obtener el artist_id asociado al usuario
+  
+      const appointmentRepository = AppDataSource.getRepository(Appointment);
+      const myAppointments = await appointmentRepository.find({
+        where: { artist_id: artistId }, // Filtrar citas por el artist_id obtenido
+        relations: ["user"], // Cargar la relación con el usuario asociado a la cita
+        select: ["id", "date", "time", "artist_id"], // Seleccionar solo los campos necesarios
+      });
+  
+      // Mapear las citas para incluir el nombre del usuario
+      const appointmentsWithUserName = myAppointments.map((appointment) => ({
+        id: appointment.id,
+        date: appointment.date,
+        time: appointment.time,
+        artist_id: appointment.artist_id,
+        user: {
+          id: appointment.user.id,
+          name: appointment.user.name,
+          last_name: appointment.user.last_name,
+          phone_number: appointment.user.phone_number,
+        },
+      }));
+  
+      res.status(200).json(appointmentsWithUserName);
     } catch (error) {
+      console.error(error);
       res.status(500).json({
         message: "Error while getting appointments",
       });
     }
   }
+  
 
-  /*
-  -El metodo getByUserId, es similar a getById, pero busca citas por el ID de usuarios.
-  */
-  async getByUserId(
-    req: Request,
-    res: Response
-  ): Promise<void | Response<any>> {
-    try {
-      const id = +req.params.id;
-      const appointmentRepository = AppDataSource.getRepository(Appointment);
-      const appointments = await appointmentRepository.findBy({
-        user_id: id,
-      });
 
-      if (!appointments) {
-        return res.status(404).json({
-          message: "Appointment not found",
-        });
-      }
-
-      res.status(200).json(appointments);
-    } catch (error) {
-      res.status(500).json({
-        message: "Error while getting appointments",
-      });
-    }
-  }
-
-/*
--Este metodo async create, maneja la solicitud para crear una nueva cita.
--Extrae los datos de la solicitud, como el ID del usuario y del artista, la fecha y la hora.
--Guarda la nueva cita en el repositorio de datos y responde con la cita creada.
-*/
   async create(
     req: Request<{}, {}, CreateAppointmentsRequestBody>,
-
     res: Response
- ): Promise<void | Response<any>> {
-    const { user_id, artist_id, date, hour } = req.body;
-
-    const appointmentRepository = AppDataSource.getRepository(Appointment);
+  ): Promise<void | Response<any>> {
     try {
-       const newAppointment: Appointment = {
-          user_id,
-          artist_id,
-          date,
-          hour,
-          
-       }
-        await appointmentRepository.save(newAppointment);
-       res.status(201).json(newAppointment);
+      const data = req.body;
+      const appointmentRepository = AppDataSource.getRepository(Appointment);
+
+      // Verificar si el artista con el artist_id proporcionado existe en la base de datos
+      const artistRepository = AppDataSource.getRepository(Artist);
+      const artist = await artistRepository.findOne({
+        where: { id: data.artist_id },
+      });
+      if (!artist) {
+        return res
+          .status(400)
+          .json({ message: "El artista especificado no existe." });
+      }
+
+      const newAppointment = await appointmentRepository.save(data);
+      res.status(201).json({
+        message: "Appointment created successfully",
+        appointment: newAppointment,
+      });
     } catch (error: any) {
-       console.error("Error while creating Appointment:", error);
-       res.status(500).json({
-          message: "Error while creating Appointment",
-          error: error.message,
-       });
+      console.error("Error while creating Appointment:", error);
+      res.status(500).json({
+        message: "Error while creating Appointment",
+        error: error.message,
+      });
     }
- }
+  }
 
-/*
--Este método async update maneja la solicitud para actualizar una cita ya existente.
--Extrae el ID de la cita y los nuevos datos de la solicitud.
--Actualiza la cita en el repositorio de datos y responde con un mensaje de éxito
-o de error segun corresponda.
-*/
- async update(req: Request, res: Response): Promise<void | Response<any>> {
+  async updateAppointment(
+    req: Request,
+    res: Response
+  ): Promise<void | Response<any>> {
     try {
-       const id = +req.params.id;
-       const data = req.body;
+      const id = +req.params.id;
+      const data = req.body;
 
-       const appointmentRepository = AppDataSource.getRepository(Appointment);
-       const appointmentUpdated = await appointmentRepository.update({ id: id }, data);
-       res.status(202).json({
-          message: "Appointment updated successfully",
-       });
+      const appointmentRepository = AppDataSource.getRepository(Appointment);
+      await appointmentRepository.update({ id: id }, data);
+
+      res.status(202).json({
+        message: "Appointment updated successfully",
+      });
     } catch (error) {
-       res.status(500).json({
-          message: "Error while updating appointment",
-       });
+      res.status(500).json({
+        message: "Error while updating appointment",
+      });
     }
- }
+  }
 
- /*
--Este método maneja la solicitud para eliminar una cita por su ID.
--Extrae el ID de la cita de la solicitud y la elimina del repositorio de datos.
--Responde con un mensaje de éxito o error según corresponda.
- */
- async delete(req: Request, res: Response): Promise<void | Response<any>> {
+  async deleteAppointment(
+    req: Request,
+    res: Response
+  ): Promise<void | Response<any>> {
     try {
-       const id = +req.params.id;
+      const id = +req.params.id;
 
-       const appointmentRepository = AppDataSource.getRepository(Appointment);
-       await appointmentRepository.delete(id);
+      const appointmentRepository = AppDataSource.getRepository(Appointment);
+      await appointmentRepository.delete(id);
 
-       res.status(200).json({
-          message: "Appointment deleted successfully",
-       });
+      res.status(200).json({
+        message: "Appointment deleted successfully",
+      });
     } catch (error) {
-       res.status(500).json({
-          message: "Error while deleting appointment",
-       });
+      res.status(500).json({
+        message: "Error while deleting appointment",
+      });
     }
- }
+  }
 }

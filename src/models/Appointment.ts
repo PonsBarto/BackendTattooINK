@@ -1,4 +1,5 @@
 import {
+  BaseEntity,
   Column,
   Entity,
   ManyToOne,
@@ -6,12 +7,12 @@ import {
   JoinColumn,
 } from "typeorm";
 import { User } from "./User";
-import { Artists } from "./Artist";
+import { Artist } from "./Artist";
 
 @Entity("appointments")
 export class Appointment {
   @PrimaryGeneratedColumn()
-  id?: number;
+  id!: number;
 
   @Column()
   user_id!: number;
@@ -19,23 +20,23 @@ export class Appointment {
   @Column()
   artist_id!: number;
 
-  @Column()
+  @Column({ type: "date" })
   date!: Date;
 
-  @Column()
-  hour!: string;
+  @Column({ type: "time" })
+  time!: Date;
 
   @Column()
-  created_at?: Date;
+  created_at!: Date;
 
   @Column()
-  updated_at?: Date;
+  updated_at!: Date;
 
-  @ManyToOne(() => User, (user) => user.roles)
+  @ManyToOne(() => User, (user) => user.role)
   @JoinColumn({ name: "user_id", referencedColumnName: "id" })
-  user?: User;
+  user!: User;
 
-  @ManyToOne(() => Artists, (artist) => artist.user)
+  @ManyToOne(() => Artist, (artist) => artist.user)
   @JoinColumn({ name: "artist_id", referencedColumnName: "id" })
-  artist?: Artists;
+  artist!: Artist;
 }

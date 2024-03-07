@@ -1,18 +1,21 @@
-export interface CreateUserRequestBody {
-  username: string;
-  name?: string;
-  surname?: string;
-  password: string;
-  email: string;
-}
-export interface CreateArtistRequestBody {
-  username: string;
-  name?: string;
-  surname?: string;
-  password: string;
-  email: string;
+export interface CreateAppointmentsRequestBody {
   user_id: number;
-  portfolio: string;
+  artist_id: number;
+  date: Date;
+  time: string;
+}
+export interface CreateUserRequestBody {
+  name: string;
+  last_name: string;
+  address: string;
+  email: string;  
+  password: string;   
+  phone_number: number;
+}
+
+export interface CreateArtistRequestBody {
+ user_id: string;
+ portfolio: string;
 }
 
 export interface LoginUserRequestBody {
@@ -21,14 +24,6 @@ export interface LoginUserRequestBody {
 }
 
 export interface TokenData {
-  email: string;
   userId: string;
-  userRoles: string[];
-}
-
-export interface CreateAppointmentsRequestBody {
-  user_id: number;
-  artist_id: number;
-  date: Date;
-  hour: string;
+  userRoles: string;
 }

@@ -1,24 +1,22 @@
-import {
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-  ManyToMany,
-  JoinTable,
-} from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from "typeorm"
 import { User } from "./User";
+
 @Entity("roles")
 export class Role {
-  @PrimaryGeneratedColumn()
-  id!: number;
 
-  @Column()
-  role_name!: string;
+    @PrimaryGeneratedColumn()
+    id!: number; 
 
-  @Column()
-  created_at!: Date;
+    @Column()
+    role_name!: string;
 
-  @Column()
-  updated_at!: Date;
+    @Column()
+    created_at!: Date;
 
-  users?: User[];
+    @Column()
+    updated_at!: Date;
+
+    @OneToMany(() => User, (user) => user.role)
+    users!: User[];
+
 }

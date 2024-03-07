@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
+import { UserRoles } from "../constants/UserRoles";
 
 export const isUser = (req: Request, res: Response, next: NextFunction) => {
   console.log(req.tokenData);

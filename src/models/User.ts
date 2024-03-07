@@ -1,59 +1,55 @@
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
+import { 
+    Entity, 
+    Column, 
+    PrimaryGeneratedColumn, 
+    JoinColumn, 
+    ManyToOne, 
+    OneToMany, 
+    OneToOne
 } from "typeorm";
 import { Role } from "./Role";
-import { Artists } from "./Artist";
+import { Artist } from "./Artist";
 import { Appointment } from "./Appointment";
 
 @Entity("users")
 export class User {
-  @PrimaryGeneratedColumn()
-  id?: number;
+    @PrimaryGeneratedColumn()
+    id?: number;
 
-  @Column({ unique: true })
-  username!: string;
+    @Column()
+    name!: string;
 
-  @Column()
-  name?: string;
+    @Column()
+    last_name!: string;
 
-  @Column()
-  surname?: string;
+    @Column()
+    photo?: string;
 
-  @Column()
-  photo?: string;
+    @Column()
+    address!: string;
 
-  @Column({select: false} )
+    @Column()
+    email!: string;
+
+    @Column()
     password!: string;
 
-  @Column({ unique: true })
-  email!: string;
+    @Column()
+    phone_number!: number;
 
-  @ManyToMany(() => Role, (role) => role.users)
-  @JoinTable({
-    name: "users_roles",
-    joinColumn: {
-      name: "user_id",
-      referencedColumnName: "id",
-    },
-    inverseJoinColumn: {
-      name: "role_id",
-      referencedColumnName: "id",
-    },
-  })
-  roles!: Role[];
+    @Column()
+    created_at!: Date;
 
-  @OneToOne(() => Artists, (artists) => artists.user)
-  artist?: Artists;
+    @Column()
+    updated_at!: Date;
 
-  @OneToMany(() => Appointment, (appointment) => appointment.user_id)
-  clientAppointments?: Appointment[];
+    @ManyToOne(() => Role, (role) => role.users)
+    @JoinColumn ({name: "role_id"})
+    role!: Role;
+
+    @OneToOne(() => Artist, (artists) => artists.user)
+    artist?: Artist;
+    
+    @OneToMany(() => Appointment, (appointment) => appointment.user_id)
+    customerAppointments!: Appointment[];
 }

@@ -7,57 +7,115 @@ import {
 import { User } from "../models/User";
 import bcrypt from "bcrypt";
 import { AppDataSource } from "../database/data-source";
+import { Artist } from "../models/Artist";
 import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
 import { UserRoles } from "../constants/UserRoles";
-import { Controller } from "./Controller";
-import { AuthController } from "./AuthController";
-import { Filter } from "typeorm";
-import { Role } from "../models/Role";
 
-export class UserController implements Controller {
-  async getAll(req: Request, res: Response): Promise<void | Response<any>> {
+export class UserController {
+  async register(
+    req: Request<{}, {}, CreateUserRequestBody>,
+    res: Response
+  ): Promise<void | Response<any>> {
+    const { name, last_name, address, email, phone_number, password } =
+      req.body;
+
+    const userRepository = AppDataSource.getRepository(User);
+
     try {
-      const userRepository = AppDataSource.getRepository(User);
-      const userRoles = AppDataSource.getRepository(Role);
-
-      const page = req.query.page ? Number(req.query.page) : null;
-      const limit = req.query.limit ? Number(req.query.limit) : null;
-
-      interface filter {
-        [key: string]: any;
-      }
-      const filter: filter = {
-        select: {
-          username: true,
-          name: true,
-          surname: true,
-          photo: true,
-          email: true,
-          id: true,
-        },
-      };
-      if (page && limit) {
-        filter.skip = (page - 1) * limit;
-      }
-      if (limit) {
-        filter.take = limit;
-      }
-
-      const [allUsers, count] = await userRepository.findAndCount(filter);
-      res.status(200).json({
-        count,
-        page,
-        results: allUsers,
+      const newUser = userRepository.create({
+        name,
+        last_name,
+        address,
+        email,
+        phone_number,
+        password: bcrypt.hashSync(password, 10),
+        role: UserRoles.CUSTOMER,
       });
-    } catch (error) {
+
+      await userRepository.save(newUser);
+      res.status(StatusCodes.CREATED).json({
+        message: "Register successfully",
+      });
+    } catch (error: any) {
+      console.error("Error while register:", error);
       res.status(500).json({
-        message: "Error while getting users",
+        message: "Error while register",
+        error: error.message,
       });
     }
   }
 
-  async getById(req: Request, res: Response): Promise<void | Response<any>> {
+  async login(
+    req: Request<{}, {}, LoginUserRequestBody>,
+    res: Response
+  ): Promise<void | Response<any>> {
+    const { password, email } = req.body;
+    const userRepository = AppDataSource.getRepository(User);
+
+    try {
+      // Validar existencia de email y contraseña
+      if (!email || !password) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          message: "Email or password is required",
+        });
+      }
+      // Encontrar un usuario por email
+      const user = await userRepository.findOne({
+        where: {
+          email: email,
+        },
+        relations: {
+          role: true,
+        },
+        select: {
+          role: {
+            role_name: true,
+          },
+        },
+      });
+
+      // Verificar usuario inexistente
+      if (!user) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          message: "Bad email or password",
+        });
+      }
+
+      // Verificar contraseña si el usuario existe
+      const isPasswordValid = bcrypt.compareSync(password, user.password);
+
+      // Verificar contraseña valida
+      if (!isPasswordValid) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          message: "Bad email or password",
+        });
+      }
+
+      // Generar token
+      const userRole = user.role.role_name;
+
+      const tokenPayload: TokenData = {
+        userId: user.id?.toString() as string,
+        userRoles: userRole as string,
+      };
+
+      const token = jwt.sign(tokenPayload, "123", {
+        expiresIn: "3h",
+      });
+
+      res.status(StatusCodes.OK).json({
+        message: "Login successfully",
+        token,
+      });
+    } catch (error) {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: "Error while login",
+        error,
+      });
+    }
+  }
+  async getProfile(req: Request, res: Response): Promise<void | Response<any>> {
     try {
       const id = +req.params.id;
 
@@ -79,44 +137,12 @@ export class UserController implements Controller {
       });
     }
   }
-
-  async create(
-    req: Request<{}, {}, CreateUserRequestBody>,
-    res: Response
-  ): Promise<void | Response<any>> {
-    const { username, name, surname, password, email } = req.body;
-    const userRepository = AppDataSource.getRepository(User);
-
-    try {
-      const newUser: User = {
-        username,
-        name,
-        surname,
-        email,
-        password: bcrypt.hashSync(password, 10),
-        roles: [UserRoles.USER],
-      };
-      await userRepository.save(newUser);
-
-      res.status(StatusCodes.CREATED).json({
-        message: "User created successfully",
-      });
-    } catch (error: any) {
-      console.error("Error while creating User:", error);
-      res.status(500).json({
-        message: "Error while creating User",
-        error: error.message,
-      });
-    }
-  }
-
   async update(req: Request, res: Response): Promise<void | Response<any>> {
     try {
-      const id = +req.tokenData.userId;
+      const id = +req.params.id;
       const data = req.body;
 
       const userRepository = AppDataSource.getRepository(User);
-      const userUpdated = await userRepository.update({ id: id }, data);
       await userRepository.update({ id: id }, data);
 
       res.status(202).json({
@@ -129,61 +155,118 @@ export class UserController implements Controller {
     }
   }
 
-  async delete(req: Request, res: Response): Promise<void | Response<any>> {
+  async createArtist(
+    req: Request<{}, {}>,
+    res: Response
+  ): Promise<void | Response<any>> {
+    const { name, last_name, photo, address, email, phone_number, password } =
+      req.body;
+    const userRepository = AppDataSource.getRepository(User);
     try {
-      const id = +req.params.id;
-
-      const userRepository = AppDataSource.getRepository(User);
-      await userRepository.delete(id);
-
-      res.status(200).json({
-        message: "User deleted successfully",
+      // Crear nuevo usuario
+      const dataUser: User = {
+        name,
+        last_name,
+        address,
+        email,
+        photo,
+        phone_number,
+        password: bcrypt.hashSync(password, 10),
+        role: UserRoles.ARTIST,
+        created_at: new Date(),
+        updated_at: new Date(),
+        customerAppointments: [],
+      };
+      const newUser = await userRepository.save(dataUser);
+      // Crear nuevo artista asociado al usuario
+      const artistRepository = AppDataSource.getRepository(Artist);
+      const newArtist = await artistRepository.save({
+        user: newUser,
+        portfolio: "https://", // Utiliza el valor proporcionado o un valor predeterminado
       });
+      res.status(201).json(newArtist);
     } catch (error: any) {
-      console.error("Error while delete users:", error);
+      console.error("Error while creating artist:", error);
       res.status(500).json({
-        message: "Error while delete users",
+        message: "Error while creating artist",
         error: error.message,
       });
     }
   }
-  async userProfile(req: Request, res: Response): Promise<Response<any>> {
+  async getAllArtists(
+    req: Request,
+    res: Response
+  ): Promise<void | Response<any>> {
     try {
-      const email = req.tokenData.email;
-      const userRepository = AppDataSource.getRepository(User);
-      const profileUser = await userRepository.findOneBy({
-        email,
+      const artistRepository = AppDataSource.getRepository(Artist);
+
+      const allArtists = await artistRepository.find({
+        relations: ["user"],
       });
 
-      if (!profileUser) {
-        return res.status(404).json({ message: "Profile not found" });
-      } else {
-        return res.status(200).json({ profileUser });
-      }
-    } catch (err) {
-      console.error("Error in the profile controller", err);
-      return res
-        .status(401)
-        .json({ status: "Error", message: "Not authorized." });
+      const artistsWithDetails = allArtists.map((artist) => ({
+        id: artist.id,
+        name: artist.user.name,
+        photo: artist.user.photo,
+      }));
+
+      res.status(200).json(artistsWithDetails);
+    } catch (error) {
+      res.status(500).json({
+        message: "Error while getting artist",
+      });
     }
   }
-  async getAllUsersFor(req: Request, res: Response): Promise<Response> {
-    const userRepository = AppDataSource.getRepository(User);
-    const profileUsers = await userRepository.find({
-      relations: {
-        roles: true,
-      },
-      select: {
-        username: true,
-        name: true,
-        email: true,
-        photo: true,
-        id: true,
-        roles: {
-          role_name: true,
+  async getAllUsers(
+    req: Request,
+    res: Response
+  ): Promise<void | Response<any>> {
+    try {
+      const UserRepository = AppDataSource.getRepository(User);
+
+      let { page, skip } = req.query;
+
+      let currentPage = page ? +page : 1;
+      let itemsPerPage = skip ? +skip : 10;
+
+      const [allUsers, count] = await UserRepository.findAndCount({
+        skip: (currentPage - 1) * itemsPerPage,
+        take: itemsPerPage,
+        select: {
+          id: true,
+          name: true,
+          last_name: true,
+          phone_number: true,
+          email: true,
         },
-      },
-    });
-    return res.status(200).json(profileUsers);
+      });
+      res.status(200).json({
+        count,
+        skip: itemsPerPage,
+        page: currentPage,
+        results: allUsers,
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "Error while getting appointments",
+      });
+    }
+  }
+
+  async deleteUser(req: Request, res: Response): Promise<void | Response<any>> {
+    try {
+      const id = +req.params.id;
+
+      const userRepository = AppDataSource.getRepository(User);
+      await userRepository.delete({ id: id });
+
+      res.status(200).json({
+        message: "user deleted successfully",
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "Error while deleting user",
+      });
+    }
   }
 }

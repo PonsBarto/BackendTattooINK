@@ -1,40 +1,30 @@
-import {
-  BaseEntity,
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToMany,
-  OneToOne,
-  JoinColumn,
-} from "typeorm";
+import { BaseEntity, Column, PrimaryGeneratedColumn, OneToMany, Entity, OneToOne, JoinColumn } from "typeorm"
 import { User } from "./User";
 import { Design } from "./Design";
 import { Appointment } from "./Appointment";
-import { UserRoles } from "../constants/UserRoles";
-@Entity("artist")
-export class Artists {
-  @PrimaryGeneratedColumn()
-  id!: number;
 
-  @Column()
-  user_id!: number;
 
-  @Column()
-  portfolio?: string;
+@Entity("artists")
+export class Artist {
+    @PrimaryGeneratedColumn()
+    id!: number;
 
-  @Column()
-  created_at!: Date;
+    @Column()
+    portfolio?: string;
 
-  @Column()
-  updated_at!: Date;
+    @Column()
+    created_at!: Date;
 
-  @OneToOne(() => User, (user) => user.artist)
-  @JoinColumn({ name: "user_id" })
-  user!: User;
+    @Column()
+    updated_at!: Date;
 
-  @OneToMany(() => Design, (design) => design)
-  design!: Design[];
+    @OneToMany(() => Design, (design) => design)
+    design!: Design[];
 
-  @OneToMany(() => Appointment, (appointment) => appointment.artist)
-  artistAppointments!: Appointment[];
+    @OneToMany(() => Appointment, (appointment) => appointment.artist)
+    customerAppointments!: Appointment[];
+
+    @OneToOne(() => User, user => user.artist)
+    @JoinColumn({ name: "user_id" })
+    user!: User;
 }

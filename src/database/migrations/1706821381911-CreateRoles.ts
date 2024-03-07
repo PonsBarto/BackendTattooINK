@@ -16,10 +16,9 @@ export class CreateRoles1706821381911 implements MigrationInterface {
           {
             name: "role_name",
             type: "enum",
-            enum: ["user", "admin", "super_admin"],
-            default: '"user"',
+            enum: ["customer", "artist", "super_admin"],
+            default: "'customer'",
           },
-
           {
             name: "created_at",
             type: "timestamp",
@@ -39,5 +38,5 @@ export class CreateRoles1706821381911 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.dropTable("roles");
-  }
+ }
 }
